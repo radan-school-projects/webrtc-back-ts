@@ -22,7 +22,7 @@ Maybe later support for mysql will be added?
 
 You will need **MongoDB** installed on your machine for local development.
 
-The mongo uri in our [config file](https://github.com/radandevist/csr-ts-mern/blob/master/config/config.ts) is best suited for [mongoDB Atlas](https://www.mongodb.com/cloud), to continue with this config you'll need to register an account there.
+The mongo uri in our [config file](https://github.com/radandevist/standalone-api-express-server/blob/master/src/config/config.ts) is best suited for [mongoDB Atlas](https://www.mongodb.com/cloud), to continue with this config you'll need to register an account there.
 
 Althought, you're free to use any mongo host or any database management system also. 
 
