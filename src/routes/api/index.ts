@@ -1,8 +1,10 @@
 import { Router, Request, Response } from "express";
+import TutorialsRoutes from "./tutorials.routes";
 import UserRoutes from "./users.routes";
+import AuthRoutes from "./auth.routes";
 
 /**
- * All routes for /api/v1
+ * All routes for /api
  */
 class ApiRoutes {
   public static prefixPath: string = "/api";
@@ -30,6 +32,8 @@ class ApiRoutes {
   routes(): void {
     this.get();
     this.router.use(UserRoutes.prefixPath, UserRoutes.getRouter());
+    this.router.use(TutorialsRoutes.prefixPath, TutorialsRoutes.getRouter());
+    this.router.use(AuthRoutes.prefixPath, AuthRoutes.getRouter());
   }
 
   /**

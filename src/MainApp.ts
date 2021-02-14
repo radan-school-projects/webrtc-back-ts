@@ -6,6 +6,10 @@ import cors from "cors";
 import helmet from "helmet";
 import config from "./config/config";
 import ApiRoutes from "./routes/api";
+import RolesModel, { PrimitiveRoles } from "./models/roles.model";
+
+const Roles = RolesModel.getModel();
+Roles.findOne();
 
 /**
  * Main Application class
@@ -15,17 +19,14 @@ class MainApp {
 
   public PORT: Number = Number(config.port) || 3000;
 
-  private mongoUri: string = (config.env == "development") ?
-    config.database.mongodb.url.dev :
-    config.database.mongodb.url.prod;
-
-  // private mongoUri: string = config.database.mongodb.url.dev;
+  private mongoUri: string = config.db.mongoUri;
 
   // eslint-disable-next-line require-jsdoc
   constructor() {
+    this.mongoDatabase();
+    // * Be aware of the order, this is important
     this.middlewares();
     this.routes();
-    this.mongoDatabase();
   }
 
   /**
@@ -53,7 +54,7 @@ class MainApp {
   /**
    * Connection to  mongodb
    */
-  private mongoDatabase(): void {
+  private async mongoDatabase(): Promise<void> {
     try {
       mongoose.connect(
           this.mongoUri,
@@ -63,10 +64,20 @@ class MainApp {
             useUnifiedTopology: true,
           },
       );
-
       console.info("Connected to the database");
+
+      // initial
+      // set essential documents collection
+      // ======
+      // set the primitive roles
+      // eslint-disable-next-line max-len
+      const primitiveRoles: Array<PrimitiveRoles> = ["user", "moderator", "admin"];
+      for (const role of primitiveRoles) {
+        if (!await Roles.findOne({ name: role })) Roles.create({ name: role });
+      }
+      console.info("Primitives roles set");
     } catch (err) {
-      console.error(`A connection error occured:\n${err}`);
+      console.error(`A database error connection occured:\n${err.message}`);
     }
   }
 
@@ -77,7 +88,7 @@ class MainApp {
   public serve():void {
     this.app.listen(
         this.PORT,
-        () => console.info(`Started at port ${this.PORT}, bouuia!`),
+        () => console.info(`Started at port ${this.PORT}, hourray!`),
     );
   }
 }
