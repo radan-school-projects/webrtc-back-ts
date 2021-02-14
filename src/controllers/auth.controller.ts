@@ -33,7 +33,7 @@ class AuthController {
 
         if (!userFound) {
           const foundRole: IRoles =
-              await Roles.findOne({ name: value.role }) as IRoles;
+              await Roles.findOne({ name: value.role });
 
           if (foundRole) {
             value.role = null;
@@ -77,7 +77,7 @@ class AuthController {
       }
 
       const foundUser: IUsers =
-          await Users.findOne({ email: value.email }) as IUsers;
+          await Users.findOne({ email: value.email });
 
       if (!foundUser) {
         responder.error(400, "no user with matching email");
@@ -168,8 +168,8 @@ class AuthController {
   Promise<any> {
     try {
       const user = req.user;
-      const foundUser: IUsers = await Users.findById(user._id) as IUsers;
-      const role: IRoles = await Roles.findById(foundUser.roleID) as IRoles;
+      const foundUser: IUsers = await Users.findById(user._id);
+      const role: IRoles = await Roles.findById(foundUser.roleID);
 
       if (role.name == "user") {
         responder.error(403, "content reserved to moderators and admins");
@@ -193,8 +193,8 @@ class AuthController {
   Promise<any> {
     try {
       const user = req.user;
-      const foundUser: IUsers = await Users.findById(user._id) as IUsers;
-      const role: IRoles = await Roles.findById(foundUser.roleID) as IRoles;
+      const foundUser: IUsers = await Users.findById(user._id);
+      const role: IRoles = await Roles.findById(foundUser.roleID);
 
       if (role.name == "user" || role.name == "moderator" ) {
         responder.error(403, "content reserved to admins");

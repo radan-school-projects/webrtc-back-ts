@@ -44,7 +44,7 @@ class TutorialsController {
   public async getByID(req: Request, res: Response): Promise<void> {
     try {
       const id = req.params.id;
-      const tutFound: ITutorials = await Tutorials.findById(id) as ITutorials;
+      const tutFound: ITutorials = await Tutorials.findById(id);
 
       if (tutFound) {
         responder.success(200, "toutorial found", tutFound);
@@ -96,7 +96,7 @@ class TutorialsController {
       if (!validationError) {
         // * Two different ways of creating a tutorial
         // eslint-disable-next-line max-len
-        // const createdTutorial: ITutorials = await Tutorials.create(value) as ITutorials;// * #1
+        // const createdTutorial: ITutorials = await Tutorials.create(value);// * #1
         // eslint-disable-next-line max-len
         const createdTutorial: ITutorials = await new Tutorials(value).save(); // * #2
 
@@ -120,7 +120,7 @@ class TutorialsController {
   public async updateByID(req: Request, res: Response): Promise<void> {
     try {
       const id = req.params.id;
-      const foundTut: ITutorials = await Tutorials.findById(id) as ITutorials;
+      const foundTut: ITutorials = await Tutorials.findById(id);
 
       if (foundTut) {
         // * validation
@@ -130,7 +130,7 @@ class TutorialsController {
         if (!validationError) {
           const log = await Tutorials.updateOne({ _id: id }, value);
           const updatedTut: ITutorials =
-              await Tutorials.findById(id) as ITutorials;
+              await Tutorials.findById(id);
 
           const data = {
             updatedTut: updatedTut,
@@ -161,7 +161,7 @@ class TutorialsController {
     try {
       const id = req.params.id;
       const tutFound: ITutorials =
-          await Tutorials.findById(req.params.id) as ITutorials;
+          await Tutorials.findById(req.params.id);
 
       if (tutFound) {
         const log = await Tutorials.deleteOne({ _id: id });
