@@ -3,6 +3,7 @@ import mongoose, { Document, Model, Schema, SchemaOptions } from "mongoose";
 export interface IUsers extends Document {
   userName: string,
   email: string,
+  password: string,
   roleID: Schema.Types.ObjectId,
 };
 
@@ -26,6 +27,7 @@ class UsersModel {
     const schemaDefinition = {
       userName: { type: String, required: true, minLength: 3, maxLength: 50 },
       email: { type: String, required: true, maxLength: 255 },
+      password: { type: String, required: true, minLength: 7 },
       roleID: { type: Schema.Types.ObjectId, ref: "Roles", required: true },
     };
     const schemaOptions: SchemaOptions = { timestamps: true };
