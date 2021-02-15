@@ -168,7 +168,7 @@ class TutorialsController {
 
         const data = {
           deletedTut: tutFound,
-          log: log,
+          log,
         };
 
         responder.success(200, "tutorial deleted", data);
