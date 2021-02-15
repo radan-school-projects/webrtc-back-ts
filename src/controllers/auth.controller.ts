@@ -1,17 +1,19 @@
 import { NextFunction, Request, Response } from "express";
 import jwt, { SignOptions } from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 import config from "../config/config";
 import { getValidationErrorMessages } from "../helpers/errorHandlers";
 import Responder from "../helpers/responder";
 import RolesModel, { IRoles } from "../models/roles.model";
 import UsersModel, { IUsers } from "../models/users.model";
 import AuthValidator from "../validators/auth.validator";
+import AuthService from "../services/auth.service";
 
 const Users = UsersModel.getModel();
 const Roles = RolesModel.getModel();
 
 const authValidator = new AuthValidator();
-
+const authService = new AuthService();
 const responder = new Responder();
 
 /**
@@ -21,38 +23,38 @@ class AuthController {
   /**
    * @param  {Request} req
    * @param  {Response} res
-   * @return {Promise<void>}
+   * @return {Promise<any>}
    */
-  public async register(req: Request, res: Response): Promise<void> {
+  public async register(req: Request, res: Response): Promise<any> {
     try {
-      // eslint-disable-next-line max-len
-      const { error: validationError, value } = authValidator.registerValidation(req.body);
+      const { userName, email, password, role } = req.body;
+      const newUser = { userName, email, password, role };
 
-      if (!validationError) {
-        const userFound = await Users.findOne({ email: value.email });
+      const { error: validationError, value } =
+          authValidator.registerValidation(newUser);
 
-        if (!userFound) {
-          const foundRole: IRoles =
-              await Roles.findOne({ name: value.role });
-
-          if (foundRole) {
-            value.role = null;
-            value.roleID = foundRole._id;
-            const createdUser = await Users.create(value);
-
-            const data = { createdUser: createdUser };
-
-            responder.success(200, "user registered", data);
-          } else {// * something that should never happen
-            responder.error(400, `role ${value.role} does not exists`);
-          }
-        } else {
-          responder.error(400, "email address already in use");
-        }
-      } else {
+      if (validationError) {
         responder.error(400, getValidationErrorMessages(validationError));
+        return responder.send(res);
       }
 
+      const userFound = await Users.findOne({ email: value.email });
+
+      if (userFound) {
+        responder.error(400, "email address already in use");
+        return responder.send(res);
+      }
+
+      const roleFound: IRoles = await Roles.findOne({ name: value.role });
+
+      if (!roleFound) {// * Something that should never happen but who knows?
+        responder.error(400, `role ${value.role} does not exists`);
+        return responder.send(res);
+      }
+
+      const data = await authService.register({ role: roleFound, value });
+
+      responder.success(200, "user registered", data);
       responder.send(res);
     } catch (err) {
       responder.error(400, err.message);
@@ -66,38 +68,40 @@ class AuthController {
    * @return { Promise<any>}
    */
   public async login(req: Request, res: Response):
-    Promise<any> {
+      Promise<any> {
     try {
-      // eslint-disable-next-line max-len
-      const { error: validationError, value } = authValidator.loginValidation(req.body);
+      const { error: validationError, value } =
+          authValidator.loginValidation(req.body);
 
       if (validationError) {
         responder.error(400, getValidationErrorMessages(validationError));
         return responder.send(res);
       }
 
-      const foundUser: IUsers =
-          await Users.findOne({ email: value.email });
+      const foundUser: IUsers = await Users.findOne({ email: value.email });
 
       if (!foundUser) {
         responder.error(400, "no user with matching email");
         return responder.send(res);
       }
 
-      const payload = { _id: foundUser._id };
-      const signOptions: SignOptions = {
-        algorithm: "HS256",
-        expiresIn: config.jwt.tokenLife,
+      const isValidPass =
+          await bcrypt.compare(value.password, foundUser.password);
+
+      if (!isValidPass) {
+        responder.error(400, "wrong password");
+        return responder.send(res);
+      }
+
+      const token = AuthController.createToken(foundUser);
+      AuthController.setTokenCookie(res, token);
+
+      const toDisplay = {
+        _id: foundUser._id,
+        userName: foundUser.userName,
       };
-      const token = jwt.sign(payload, config.jwt.secret, signOptions);
 
-      const nowDate: Date = new Date();
-      res.cookie("access_token", token, {
-        // expires one day from its activation
-        expires: new Date(nowDate.getTime() + config.jwt.cookieMaxAge),
-      });
-
-      const data = { token: token, user: foundUser };
+      const data = { token, user: toDisplay };
 
       responder.success(200, "user logged in", data);
       responder.send(res);
@@ -108,6 +112,32 @@ class AuthController {
   }
 
   /**
+   * @param {IUsers} user
+   * @return {string}
+   */
+  private static createToken(user: IUsers): string {
+    const payload = { _id: user._id };
+    const signOptions: SignOptions = {
+      algorithm: "HS256",
+      expiresIn: config.jwt.tokenLife,
+    };
+    return jwt.sign(payload, config.jwt.secret, signOptions);
+  }
+
+  /**
+   * @param  {Response} res
+   * @param  {string} token
+   * @return {void}
+   */
+  private static setTokenCookie(res: Response, token: string): void {
+    const nowDate: Date = new Date();
+    res.cookie("access_token", token, {
+      // expires one day from its activation
+      expires: new Date(nowDate.getTime() + config.jwt.cookieMaxAge),
+    });
+  }
+
+  /**
    * @param  {Request} req
    * @param  {Response} res
    * @return {Promise<any>}
@@ -115,7 +145,7 @@ class AuthController {
   public async logout(req: Request, res: Response):
       Promise<any> {
     try {
-      req.user = null;
+      delete req.user;
       res.clearCookie("access_token");
 
       responder.success(200, "you are logged out");
@@ -167,9 +197,7 @@ class AuthController {
   public async isModerator(req: Request, res: Response, next: NextFunction):
   Promise<any> {
     try {
-      const user = req.user;
-      const foundUser: IUsers = await Users.findById(user._id);
-      const role: IRoles = await Roles.findById(foundUser.roleID);
+      const role = await authService.getRoleOfRequestUser(req.user);
 
       if (role.name == "user") {
         responder.error(403, "content reserved to moderators and admins");
@@ -192,9 +220,7 @@ class AuthController {
   public async isAdmin(req: Request, res: Response, next: NextFunction):
   Promise<any> {
     try {
-      const user = req.user;
-      const foundUser: IUsers = await Users.findById(user._id);
-      const role: IRoles = await Roles.findById(foundUser.roleID);
+      const role = await authService.getRoleOfRequestUser(req.user);
 
       if (role.name == "user" || role.name == "moderator" ) {
         responder.error(403, "content reserved to admins");

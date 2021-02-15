@@ -10,7 +10,7 @@ const config = {
         `mongodb://${process.env.IP || "localhost"}:${process.env.MONGO_PORT || "27017"}/${process.env.DB_NAME || "api-express"}`,
   },
   jwt: {
-    secret: process.env.JWT_SECRET || "your-secret-key",
+    secret: process.env.JWT_SECRET || "api-secret-key",
     tokenLife: "2h",
     cookieMaxAge: 24 * 60 * 60 * 1000, // 24h in milliseconds
   },
