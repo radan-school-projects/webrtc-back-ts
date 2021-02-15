@@ -88,7 +88,7 @@ class MainApp {
   public async createParentAdmin(): Promise<void> {
     let foundRole: IRoles;
     do {
-      foundRole = await Roles.findOne({ name: "admin" });
+      foundRole = await Roles.findOne({ name: "admin" }) as IRoles;
     } while (!foundRole);
     // console.log(foundRole);
 
