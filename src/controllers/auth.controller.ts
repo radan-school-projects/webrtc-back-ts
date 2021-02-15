@@ -16,6 +16,8 @@ const authValidator = new AuthValidator();
 const authService = new AuthService();
 const responder = new Responder();
 
+const cookieName = config.jwt.cookieName;
+
 /**
  * AuthController
  */
@@ -131,7 +133,7 @@ class AuthController {
    */
   private static setTokenCookie(res: Response, token: string): void {
     const nowDate: Date = new Date();
-    res.cookie("access_token", token, {
+    res.cookie(cookieName, token, {
       // expires one day from its activation
       expires: new Date(nowDate.getTime() + config.jwt.cookieMaxAge),
     });
@@ -146,7 +148,7 @@ class AuthController {
       Promise<any> {
     try {
       delete req.user;
-      res.clearCookie("access_token");
+      res.clearCookie(cookieName);
 
       responder.success(200, "you are logged out");
       responder.send(res);
@@ -165,7 +167,7 @@ class AuthController {
   public async verifyToken(req: Request, res: Response, next: NextFunction):
   Promise<any> {
     try {
-      const token = req.cookies.access_token;
+      const token = req.cookies[cookieName];
 
       if (!token) {// there is no token provided
         responder.error(401, "access denied, you need to login");
