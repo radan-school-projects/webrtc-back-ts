@@ -1,6 +1,6 @@
-# standalone-api-express-server
+# api-express
 
-I think the name is already much descriptive.
+A Standalone Api Server built with Express
 
 This repo is intended as a starting point for futures api-server projects based on express and mongodb via mongoose. And also we will be using **typescript**.
 
@@ -28,6 +28,15 @@ Althought, you're free to use any mongo host or any database management system a
 
 ## Todo next:
 
-[ ] functionning CRUD Api routes with Authentication and role based authorizations
+* [X] functionning CRUD Api routes with Authentication and role based authorizations
 
-[ ] idk
+* [ ] add authors field in tutorials model
+
+* [ ]  detailed authorization:
+  * [ ]  only admin can delete user and update role
+  * [ ]  admins can also create users
+  * [ ]  moderators and admins can unpublish tutorial
+  * [ ]  only user can update his email and username
+
+* [ ]  generate api-docs using swagger-ui
+* [ ]  revise all status code responses in the appe case
