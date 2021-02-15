@@ -47,7 +47,8 @@ class AuthController {
         return responder.send(res);
       }
 
-      const roleFound: IRoles = await Roles.findOne({ name: value.role });
+      const roleFound: IRoles =
+          await Roles.findOne({ name: value.role }) as IRoles;
 
       if (!roleFound) {// * Something that should never happen but who knows?
         responder.error(400, `role ${value.role} does not exists`);
@@ -80,7 +81,8 @@ class AuthController {
         return responder.send(res);
       }
 
-      const foundUser: IUsers = await Users.findOne({ email: value.email });
+      const foundUser: IUsers =
+          await Users.findOne({ email: value.email }) as IUsers;
 
       if (!foundUser) {
         responder.error(400, "no user with matching email");

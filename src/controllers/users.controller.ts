@@ -40,7 +40,7 @@ class UsersController {
   public async deleteByID(req: Request, res: Response): Promise<any> {
     try {
       const id = req.params.id;
-      const foundUser: IUsers = await Users.findById(id);
+      const foundUser: IUsers = await Users.findById(id) as IUsers;
 
       if (!foundUser) {
         responder.error(400, "no user with matching id");
