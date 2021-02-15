@@ -33,6 +33,41 @@ class UsersController {
   }
 
   /**
+   * @param {Request} req
+   * @param {Response} res
+   * @return {Promise<any>}
+   */
+  public async deleteByID(req: Request, res: Response): Promise<any> {
+    try {
+      const id = req.params.id;
+      const foundUser: IUsers = await Users.findById(id);
+
+      if (!foundUser) {
+        responder.error(400, "no user with matching id");
+        return responder.send(res);
+      }
+
+      const log = await Users.deleteOne({ _id: id });
+
+      const toDisplay = {
+        _id: id,
+        userName: foundUser.userName,
+      };
+
+      const data = {
+        deletedUser: toDisplay,
+        log,
+      };
+
+      responder.success(200, "user deleted", data);
+      responder.send(res);
+    } catch (err) {
+      responder.error(400, err.message);
+      responder.send(res);
+    }
+  }
+
+  /**
    * @param  {Request} req
    * @param  {Response} res
    * @return {Promise<void>}
