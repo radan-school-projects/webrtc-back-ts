@@ -12,6 +12,7 @@ const config = {
   jwt: {
     secret: process.env.JWT_SECRET || "api-secret-key",
     tokenLife: "2h",
+    cookieName: "api-express-token",
     cookieMaxAge: 24 * 60 * 60 * 1000, // 24h in milliseconds
   },
 };
