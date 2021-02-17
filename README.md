@@ -1,4 +1,4 @@
-# api-express
+# api-express-ts
 
 A Standalone Api Server built with Express
 
