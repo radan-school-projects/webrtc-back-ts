@@ -1,6 +1,18 @@
 {
-  "name": "server-webpack",
+  "name": "api-express",
   "version": "1.0.0",
+  "description": "An express api server starter project using typescript",
+  "author": "Andrianarisoa Daniel",
+  "license": "MIT",
+  "keywords": [
+    "express",
+    "mongodb",
+    "node"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/radandevist/api-express"
+  },
   "main": "dist/server.bundle.js",
   "scripts": {
     "clean": "rimraf dist",
@@ -9,7 +21,6 @@
     "build:dev": "webpack --config=./webpack/webpack.dev.js",
     "dev": "webpack --config=./webpack/webpack.dev.js --watch --color"
   },
-  "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "compression": "^1.7.4",
