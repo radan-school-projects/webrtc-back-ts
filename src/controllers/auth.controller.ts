@@ -77,7 +77,7 @@ class AuthController {
           authValidator.loginValidation(req.body);
 
       if (validationError) {
-        responder.error(400, getValidationErrorMessages(validationError));
+        responder.error(401, getValidationErrorMessages(validationError));
         return responder.send(res);
       }
 
@@ -85,7 +85,7 @@ class AuthController {
           await Users.findOne({ email: value.email }) as IUsers;
 
       if (!foundUser) {
-        responder.error(400, "no user with matching email");
+        responder.error(401, "no user with matching email");
         return responder.send(res);
       }
 
@@ -93,7 +93,7 @@ class AuthController {
           await bcrypt.compare(value.password, foundUser.password);
 
       if (!isValidPass) {
-        responder.error(400, "wrong password");
+        responder.error(401, "wrong password");
         return responder.send(res);
       }
 
