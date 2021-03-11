@@ -3,7 +3,7 @@ import { Response } from "express";
 interface Result {
   status: string;
   message: string | Array<string>;
-  data?: any
+  content?: any
 };
 
 /**
@@ -16,7 +16,7 @@ class Responder {
 
   private message!: string | Array<string>;
 
-  private data: any = null;
+  private content: any = null;
 
   /**
    * @param  {number} code
@@ -31,7 +31,7 @@ class Responder {
     this.type = "success";
     this.code = code;
     this.message = message;
-    this.data = data;
+    this.content = data;
   };
 
   /**
@@ -59,7 +59,7 @@ class Responder {
       result = {
         status: this.type,
         message: this.message,
-        data: this.data,
+        content: this.content,
       };
     } else {
       result = {
