@@ -7,14 +7,15 @@ interface Result {
 };
 
 /**
- * [Description Responder]
+ * Responder
+ * Format the response datas
  */
 class Responder {
   private type!: string;
 
   private code!: number;
 
-  private message!: string | Array<string>;
+  private message!: Array<string>;
 
   private content: any = null;
 
@@ -30,7 +31,7 @@ class Responder {
       data?: any): Promise<void> {
     this.type = "success";
     this.code = code;
-    this.message = message;
+    this.message = this.placeInArr(message);
     this.content = data;
   };
 
@@ -44,7 +45,7 @@ class Responder {
       message: string | Array<string>): Promise<void> {
     this.type = "error";
     this.code = code;
-    this.message = message;
+    this.message = this.placeInArr(message);
   };
 
   /**
@@ -68,9 +69,13 @@ class Responder {
       };
     }
 
-    // res.status(this.code).json(result);
     return res.status(this.code).json(result);
   };
+
+  // eslint-disable-next-line require-jsdoc
+  private placeInArr(str: string | Array<string>): string[] {
+    return (typeof str == "string") ? [str] : str;
+  }
 }
 
 export default Responder;
