@@ -24,7 +24,12 @@ You will need **MongoDB** installed on your machine for local development.
 
 The mongo uri in our [config file](https://github.com/radandevist/standalone-api-express-server/blob/master/src/config/config.ts) is best suited for [mongoDB Atlas](https://www.mongodb.com/cloud), to continue with this config you'll need to register an account there.
 
-Althought, you're free to use any mongo host or any database management system also. 
+Althought, you're free to use any mongo host or any database management system also.
+
+## about environment variable:
+
+In development mode(!! Only in development mode !!), this repo uses [dotenv-webpack](https://www.npmjs.com/package/dotenv-webpack) for loading environment in a `.env` file at the root folder.
+The `.env` file is intentionnaly gitignored for security concerns.
 
 ## Todo next:
 
