@@ -20,6 +20,7 @@ const config = {
     email: process.env.ADMIN_EMAIL || "superadmin@gmail.com",
     password: process.env.ADMIN_PASS || "1234567",
   },
+  primitiveRoles: ["user", "moderator", "admin"],
 };
 
 export default config;

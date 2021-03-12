@@ -7,4 +7,6 @@ declare global {
             user?: Record<IUsers>
         }
     }
+
+    type PrimitiveRoles = "user" | "moderator" | "admin";
 }
