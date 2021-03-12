@@ -31,6 +31,9 @@ Althought, you're free to use any mongo host or any database management system a
 In development mode(!! Only in development mode !!), this repo uses [dotenv-webpack](https://www.npmjs.com/package/dotenv-webpack) for loading environment in a `.env` file at the root folder.
 The `.env` file is intentionnaly gitignored for security concerns.
 
+**remark:** Each time a new environment variable is added to `.env` you will need to restart manually the server; i.e.: hint <kbd>Ctrl</kbd> + <kbd>C</kbd> to stop the server then re-run `yarn dev`.
+
+
 ## Todo next:
 
 * [X] functionning CRUD Api routes with Authentication and role based authorizations
