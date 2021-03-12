@@ -7,7 +7,7 @@ import helmet from "helmet";
 import bcrypt from "bcryptjs";
 import config from "./config/config";
 import ApiRoutes from "./routes/api";
-import RolesModel, { IRoles, PrimitiveRoles } from "./models/roles.model";
+import RolesModel, { IRoles } from "./models/roles.model";
 import UsersModel from "./models/users.model";
 
 const Roles = RolesModel.getModel();
@@ -85,8 +85,8 @@ class MainApp {
    * @return {Promise<void>}
    */
   private async createPrimitiveRoles(): Promise<void> {
-    const primitiveRoles: Array<PrimitiveRoles> =
-          ["user", "moderator", "admin"];
+    const primitiveRoles: PrimitiveRoles[] =
+          config.primitiveRoles as PrimitiveRoles[];
 
     for (const role of primitiveRoles) {
       if (!await Roles.findOne({ name: role })) {
