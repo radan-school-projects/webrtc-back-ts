@@ -1,4 +1,5 @@
 import Joi, { ValidationResult } from "joi";
+import config from "../config/config";
 
 /**
  * [AuthValidator]
@@ -14,7 +15,7 @@ class AuthValidator {
       email: Joi.string().email().max(255).required(),
       password: Joi.string().min(7).required(),
       // eslint-disable-next-line max-len
-      role: Joi.string().optional().valid("user", "moderator", "admin").default("user"),
+      role: Joi.string().optional().valid(config.primitiveRoles).default("user"),
     });
 
     return _schema.validate(data, { abortEarly: false });
