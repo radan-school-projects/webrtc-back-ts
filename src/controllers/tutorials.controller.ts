@@ -24,9 +24,9 @@ class TutorialsController {
       const tutsFound: Array<ITutorials> = await Tutorials.find();
 
       if (tutsFound.length > 0) {
-        responder.success(200, "successfully got tutorials list", tutsFound);
+        responder.success(200, "got all tutorials", tutsFound);
       } else {
-        responder.success(200, "no tutorials found");
+        responder.error(404, "no tutorials found");
       }
 
       responder.send(res);
@@ -47,9 +47,9 @@ class TutorialsController {
       const tutFound: ITutorials = await Tutorials.findById(id) as ITutorials;
 
       if (tutFound) {
-        responder.success(200, "toutorial found", tutFound);
+        responder.success(200, "tutorial found", tutFound);
       } else {
-        responder.error(400, "no tutorial with matching id");
+        responder.error(404, "no tutorial with matching id");
       }
 
       responder.send(res);
@@ -66,13 +66,13 @@ class TutorialsController {
    */
   public async getPublished(req: Request, res: Response): Promise<void> {
     try {
-      // eslint-disable-next-line max-len
-      const tutsFound: Array<ITutorials> = await Tutorials.find({ published: true });
+      const tutsFound: Array<ITutorials> =
+        await Tutorials.find({ published: true });
 
       if (tutsFound.length > 0) {
-        responder.success(200, "Got all published tutorials", tutsFound);
+        responder.success(200, "got published tutorials", tutsFound);
       } else {
-        responder.error(400, "there are no published tutorials");
+        responder.error(404, "no published tutorials found");
       }
 
       responder.send(res);
@@ -90,8 +90,8 @@ class TutorialsController {
   public async create(req: Request, res: Response): Promise<void> {
     try {
       // * validation
-      const { error: validationError, value } = tutorialsValidator
-          .createValidation(req.body);
+      const { error: validationError, value } =
+        tutorialsValidator.createValidation(req.body);
 
       if (!validationError) {
         // * Two different ways of creating a tutorial
@@ -100,9 +100,9 @@ class TutorialsController {
         // eslint-disable-next-line max-len
         const createdTutorial: ITutorials = await new Tutorials(value).save(); // * #2
 
-        responder.success(200, "Tutorial succesfully created", createdTutorial);
+        responder.success(200, "tutorial created", createdTutorial);
       } else {
-        responder.error(400, getValidationErrorMessages(validationError));
+        responder.error(422, getValidationErrorMessages(validationError));
       }
 
       responder.send(res);
@@ -137,12 +137,12 @@ class TutorialsController {
             log: log,
           };
 
-          responder.success(200, "Tutorial updated", data);
+          responder.success(200, "tutorial updated", data);
         } else {
-          responder.error(400, getValidationErrorMessages(validationError));
+          responder.error(422, getValidationErrorMessages(validationError));
         }
       } else {
-        responder.error(400, "no tutorial with matching id found");
+        responder.error(404, "no tutorial with matching id found");
       }
 
       responder.send(res);
@@ -173,7 +173,7 @@ class TutorialsController {
 
         responder.success(200, "tutorial deleted", data);
       } else {
-        responder.error(400, "no tutorial with matching id found");
+        responder.error(404, "no tutorial with matching id found");
       }
 
       responder.send(res);

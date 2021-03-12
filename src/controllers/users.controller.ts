@@ -20,9 +20,9 @@ class UsersController {
       const usersFound: Array<IUsers> = await Users.find();
 
       if (usersFound.length > 0) {
-        responder.success(200, "successfully got users list", usersFound);
+        responder.success(200, "got all users", usersFound);
       } else {
-        responder.success(200, "No tutorials found");
+        responder.error(404, "no tutorials found");
       }
 
       responder.send(res);
@@ -43,7 +43,7 @@ class UsersController {
       const foundUser: IUsers = await Users.findById(id) as IUsers;
 
       if (!foundUser) {
-        responder.error(400, "no user with matching id");
+        responder.error(404, "no user with matching id found");
         return responder.send(res);
       }
 
@@ -74,7 +74,7 @@ class UsersController {
    */
   public async userBoard(req: Request, res: Response): Promise<void> {
     try {
-      responder.success(200, "This is the user board", { user: req.user });
+      responder.success(200, "this is the user board", { user: req.user });
 
       responder.send(res);
     } catch (err) {
@@ -91,7 +91,7 @@ class UsersController {
   public async moderatorBoard(req: Request, res: Response): Promise<void> {
     try {
       // eslint-disable-next-line max-len
-      responder.success(200, "This is the moderators board", { user: req.user });
+      responder.success(200, "this is the moderators board", { user: req.user });
 
       responder.send(res);
     } catch (err) {
@@ -108,7 +108,7 @@ class UsersController {
   public async adminBoard(req: Request, res: Response): Promise<void> {
     try {
       // eslint-disable-next-line max-len
-      responder.success(200, "This is the admins board", { user: req.user });
+      responder.success(200, "this is the admins board", { user: req.user });
 
       responder.send(res);
     } catch (err) {

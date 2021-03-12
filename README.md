@@ -47,4 +47,4 @@ The `.env` file is intentionnaly gitignored for security concerns.
   * [ ]  only user can update his email and username
 
 * [ ]  generate api-docs using swagger-ui
-* [ ]  revise all status code responses in the appe case
+* [X]  revise all status code responses in the appe case

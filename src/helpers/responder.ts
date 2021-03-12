@@ -32,7 +32,7 @@ class Responder {
     this.type = "success";
     this.code = code;
     this.message = this.placeInArr(message);
-    this.content = data;
+    this.content = data ?? [];
   };
 
   /**
