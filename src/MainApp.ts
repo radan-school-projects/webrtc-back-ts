@@ -58,7 +58,7 @@ class MainApp {
    */
   private async mongoDatabase(): Promise<void> {
     try {
-      mongoose.connect(
+      await mongoose.connect(
           this.mongoUri,
           {
             useNewUrlParser: true,
@@ -70,14 +70,28 @@ class MainApp {
 
       // initial
       // set essential documents collection
-      // initial
-      // set essential documents collection
       await this.createPrimitiveRoles();
       console.info("Primitives roles set");
+
       await this.createParentAdmin();
-      console.info("admin parent created");
+      console.info("Admin parent created");
     } catch (err) {
-      console.error(`A database error connection occured:\n${err.message}`);
+      console.error(`A database error connection occured:\n${err}`);
+    }
+  }
+
+  /**
+   * set the primitive roles
+   * @return {Promise<void>}
+   */
+  private async createPrimitiveRoles(): Promise<void> {
+    const primitiveRoles: Array<PrimitiveRoles> =
+          ["user", "moderator", "admin"];
+
+    for (const role of primitiveRoles) {
+      if (!await Roles.findOne({ name: role })) {
+        await Roles.create({ name: role });
+      }
     }
   }
 
@@ -86,11 +100,7 @@ class MainApp {
    * @return {Promise<void>}
    */
   public async createParentAdmin(): Promise<void> {
-    let foundRole: IRoles;
-    do {
-      foundRole = await Roles.findOne({ name: "admin" }) as IRoles;
-    } while (!foundRole);
-    // console.log(foundRole);
+    const foundRole = await Roles.findOne({ name: "admin" }) as IRoles;
 
     const { name: userName, email, password } = config.siteAdmin;
 
@@ -109,21 +119,7 @@ class MainApp {
   }
 
   /**
-   * set the primitive roles
-   * @return {Promise<void>}
-   */
-  private async createPrimitiveRoles(): Promise<void> {
-    const primitiveRoles: Array<PrimitiveRoles> =
-        ["user", "moderator", "admin"];
-
-    for (const role of primitiveRoles) {
-      if (!await Roles.findOne({ name: role })) Roles.create({ name: role });
-    }
-  }
-
-  /**
    * Serve this application
-   * @param  {MainApp} mainApp
    */
   public serve():void {
     this.app.listen(
