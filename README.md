@@ -36,7 +36,6 @@ The `.env` file is intentionnaly gitignored for security concerns.
 
 ## Todo next:
 
-* [X] functionning CRUD Api routes with Authentication and role based authorizations
 
 * [ ] add authors field in tutorials model
 
@@ -47,4 +46,7 @@ The `.env` file is intentionnaly gitignored for security concerns.
   * [ ]  only user can update his email and username
 
 * [ ]  generate api-docs using swagger-ui
+
+* [X] functionning CRUD Api routes with Authentication and role based authorizations
+
 * [X]  revise all status code responses in the appe case
