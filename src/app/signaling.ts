@@ -36,6 +36,13 @@ export const login = ({ socket, content }: SignalingProps) => {
     id: socket.id,
     name: username,
   });
+
+  // send a success response
+  responder.send(socket, {
+    success: true,
+    type: "login",
+    content: { description: "login successful" },
+  });
 };
 
 // export const offer = ({ socket, content }: SignalingProps) => {

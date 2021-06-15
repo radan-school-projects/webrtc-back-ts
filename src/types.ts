@@ -4,31 +4,33 @@ export interface ExtendedSocket extends Socket {
   username?: string;
 }
 
-const CommandType = {
+const CommandTypeEnum = {
   CONNECT: "connect",
   LOGIN: "login",
   LEAVE: "leave",
   OFFER: "offer",
   ANSWER: "answer",
 } as const;
-export type CommandType = typeof CommandType[keyof typeof CommandType];
+export type CommandType = typeof CommandTypeEnum[keyof typeof CommandTypeEnum];
 
-const ResponseType = {
-  ...CommandType,
+const ResponseTypeEnum = {
+  ...CommandTypeEnum,
   ERROR: "error",
   OTHER: "other",
 } as const;
-export type ResponseType = typeof ResponseType[keyof typeof ResponseType];
+export type ResponseType =
+  typeof ResponseTypeEnum[keyof typeof ResponseTypeEnum];
 
 export interface ICommand {
   type: CommandType;
   content: any;
 }
+
 export interface IResponse {
   type: ResponseType;
   success: boolean;
   content: any | null;
-};
+}
 
 export interface IUser {
   name: string;

@@ -2,7 +2,7 @@ import { Socket } from "socket.io";
 import { IResponse } from "../types";
 
 export const send = (socket: Socket, response: IResponse) => {
-  socket.send(response);
+  socket.emit("response", response);
 };
 
 export const sendTo =
