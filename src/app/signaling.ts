@@ -13,11 +13,13 @@ export const login = ({ socket, content }: SignalingProps) => {
 
   // if no username
   if (!username) {
-    return responder.send(socket, {
+    responder.send(socket, {
       success: false,
       type: "login",
       content: { description: "username cannot be empty" },
     });
+
+    return socket.disconnect();
   }
 
   // check if the username is already used
@@ -95,6 +97,8 @@ export const offer = ({ socket, content }: SignalingProps) => {
     type: "offer",
     content: {
       description: `${(socket as ExtendedSocket).username} sent you an offer`,
+      emitter: (socket as ExtendedSocket).username,
+      offer,
     },
   });
 };

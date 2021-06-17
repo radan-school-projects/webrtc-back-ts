@@ -20,14 +20,14 @@ export const onConnection = (socket: ExtendedSocket) => {
     const i = usersList.indexOf(me);
     usersList.splice(i, 1);
 
-    responder.broadcast(socket, {
-      type: "leave",
-      success: true,
-      content: {
-        message: `User "${me.name}" has leaved`,
-        userDisconnected: me,
-      },
-    });
+    // responder.broadcast(socket, {
+    //   type: "leave",
+    //   success: true,
+    //   content: {
+    //     message: `User "${me.name}" has leaved`,
+    //     userDisconnected: me,
+    //   },
+    // });
   });
 
   socket.on("command", (command) => {

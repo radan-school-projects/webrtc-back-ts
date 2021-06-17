@@ -1,7 +1,7 @@
 // import { Socket } from "socket.io";
 import { ExtendedError } from "socket.io/dist/namespace";
 import { ExtendedSocket } from "../types";
-import * as responder from "../utils/responder";
+// import * as responder from "../utils/responder";
 
 export const ioUsername =
 (socket: ExtendedSocket, next: (err?: ExtendedError | undefined) => void) => {
@@ -9,13 +9,17 @@ export const ioUsername =
   if (!username) {
     console.log("invalid username");
 
-    responder.send(socket, {
-      success: false,
-      type: "connect",
-      content: { description: "invalid username" },
-    });
+    // responder.send(socket, {
+    //   success: false,
+    //   type: "connect",
+    //   content: { description: "invalid username" },
+    // });
 
-    return next(new Error("invalid username"));
+    // socket.disconnect();
+
+    next(new Error("invalid username"));
+    // socket.disconnect();
+    // return;
   }
   socket.username = username;
   next();

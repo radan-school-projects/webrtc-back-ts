@@ -2,7 +2,7 @@ import express from "express";
 import http from "http";
 import { Server } from "socket.io";
 import * as ws from "./app/websocket";
-import { ioUsername } from "./middleware/io.middleware";
+// import { ioUsername } from "./middleware/io.middleware";
 import * as config from "./config";
 
 // don't forget to awake heroku
@@ -13,7 +13,7 @@ const httpServer = http.createServer(app);
 const io = new Server(httpServer, config.serverOptions);
 
 // middlewares
-io.use(ioUsername);
+// io.use(ioUsername);
 
 // socket events
 io.on("connection", ws.onConnection);
