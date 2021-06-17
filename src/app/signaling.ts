@@ -1,10 +1,11 @@
-import { Socket } from "socket.io";
+// import { Socket } from "socket.io";
 import { ExtendedSocket } from "../types";
 import * as responder from "../utils/responder";
 import { usersList } from "./users";
 
 interface SignalingProps {
-  socket: Socket | ExtendedSocket;
+  // socket: Socket | ExtendedSocket;
+  socket: ExtendedSocket;
   content: any;
 }
 
@@ -57,7 +58,7 @@ export const offer = ({ socket, content }: SignalingProps) => {
       content: { description: "friendname cannot be empty" },
     });
   }
-  if ((socket as ExtendedSocket).username === friendname) {
+  if (socket.username === friendname) {
     return responder.send(socket, {
       success: false,
       type: "offer",
@@ -96,8 +97,8 @@ export const offer = ({ socket, content }: SignalingProps) => {
     success: true,
     type: "offer",
     content: {
-      description: `${(socket as ExtendedSocket).username} sent you an offer`,
-      emitter: (socket as ExtendedSocket).username,
+      description: `${socket.username} sent you an offer`,
+      emitter: socket.username,
       offer,
     },
   });
@@ -109,7 +110,8 @@ export const offer = ({ socket, content }: SignalingProps) => {
 
 interface ErrorProps {
   type: string;
-  socket: Socket | ExtendedSocket;
+  // socket: Socket | ExtendedSocket;
+  socket: ExtendedSocket;
 }
 
 export const error = ({ socket, type }: ErrorProps) => {
