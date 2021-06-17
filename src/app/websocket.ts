@@ -43,7 +43,7 @@ export const onConnection = (socket: ExtendedSocket) => {
 
       case "offer":
         // signaling.offer({ socket, contact, offer });
-        // signaling.offer({ socket, content });
+        signaling.offer({ socket, content });
         break;
 
       case "answer":

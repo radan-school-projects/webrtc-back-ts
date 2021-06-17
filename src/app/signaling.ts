@@ -45,9 +45,59 @@ export const login = ({ socket, content }: SignalingProps) => {
   });
 };
 
-// export const offer = ({ socket, content }: SignalingProps) => {
+export const offer = ({ socket, content }: SignalingProps) => {
+  const { friendname, offer } = content;
 
-// };
+  if (!friendname) {
+    return responder.send(socket, {
+      success: false,
+      type: "offer",
+      content: { description: "friendname cannot be empty" },
+    });
+  }
+  if ((socket as ExtendedSocket).username === friendname) {
+    return responder.send(socket, {
+      success: false,
+      type: "offer",
+      content: { description: "a friend can't be yourself" },
+    });
+  }
+
+  const foundUser = usersList.find((user) => user.name === friendname);
+  if (!foundUser) {
+    return responder.send(socket, {
+      success: false,
+      type: "offer",
+      content: { description: "no friends with matching name" },
+    });
+  }
+  // if (foundUser.name === friendname) {
+  //   return responder.send(socket, {
+  //     success: false,
+  //     type: "offer",
+  //     content: { description: "a friend can't be yourself" },
+  //   });
+  // }
+
+  if (!offer) {
+    return responder.send(socket, {
+      success: false,
+      type: "offer",
+      content: {
+        description: "offer cannot be empty",
+      },
+    });
+  }
+
+  // send the offer to our friend
+  responder.sendTo(socket, foundUser.id, {
+    success: true,
+    type: "offer",
+    content: {
+      description: `${(socket as ExtendedSocket).username} sent you an offer`,
+    },
+  });
+};
 
 // export const answer = ({ socket, content }: SignalingProps) => {
 
