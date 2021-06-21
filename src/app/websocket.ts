@@ -48,7 +48,7 @@ export const onConnection = (socket: ExtendedSocket) => {
 
       case "answer":
         // signaling.answer({ socket, contact, answer });
-        // signaling.answer({ socket, content });
+        signaling.answer({ socket, content });
         break;
 
       default:

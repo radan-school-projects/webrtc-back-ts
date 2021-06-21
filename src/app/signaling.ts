@@ -104,9 +104,46 @@ export const offer = ({ socket, content }: SignalingProps) => {
   });
 };
 
-// export const answer = ({ socket, content }: SignalingProps) => {
+export const answer = ({ socket, content }: SignalingProps) => {
+  const { answer, caller } = content;
 
-// };
+  if (!caller) {
+    return responder.send(socket, {
+      success: false,
+      type: "answer",
+      content: { description: "caller have no id!" },
+    });
+  }
+
+  if (!answer) {
+    return responder.send(socket, {
+      success: false,
+      type: "answer",
+      content: {
+        description: "answer cannot be empty!",
+      },
+    });
+  }
+
+  const foundUser = usersList.find((user) => user.name === caller);
+  if (!foundUser) {
+    return responder.send(socket, {
+      success: false,
+      type: "answer",
+      content: { description: "no caller with matching name" },
+    });
+  }
+
+  responder.sendTo(socket, foundUser.id, {
+    success: true,
+    type: "answer",
+    content: {
+      description: `${socket.username} answered you`,
+      emitter: socket.username,
+      answer,
+    },
+  });
+};
 
 interface ErrorProps {
   type: string;
