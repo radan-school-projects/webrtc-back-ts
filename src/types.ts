@@ -10,6 +10,7 @@ const CommandTypeEnum = {
   LEAVE: "leave",
   OFFER: "offer",
   ANSWER: "answer",
+  CANDIDATE: "candidate",
 } as const;
 export type CommandType = typeof CommandTypeEnum[keyof typeof CommandTypeEnum];
 

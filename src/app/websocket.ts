@@ -37,18 +37,19 @@ export const onConnection = (socket: ExtendedSocket) => {
 
     switch (type) {
       case "login":
-        // signaling.login({ socket, username });
         signaling.login({ socket, content });
         break;
 
       case "offer":
-        // signaling.offer({ socket, contact, offer });
         signaling.offer({ socket, content });
         break;
 
       case "answer":
-        // signaling.answer({ socket, contact, answer });
         signaling.answer({ socket, content });
+        break;
+
+      case "candidate":
+        signaling.candidate({ socket, content });
         break;
 
       default:

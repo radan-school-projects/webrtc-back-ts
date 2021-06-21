@@ -74,13 +74,6 @@ export const offer = ({ socket, content }: SignalingProps) => {
       content: { description: "no friends with matching name" },
     });
   }
-  // if (foundUser.name === friendname) {
-  //   return responder.send(socket, {
-  //     success: false,
-  //     type: "offer",
-  //     content: { description: "a friend can't be yourself" },
-  //   });
-  // }
 
   if (!offer) {
     return responder.send(socket, {
@@ -145,6 +138,35 @@ export const answer = ({ socket, content }: SignalingProps) => {
   });
 };
 
+export const candidate = ({ socket, content }: SignalingProps) => {
+  const { candidate, friendname } = content;
+
+  if (!candidate) {
+    return responder.send(socket, {
+      success: false,
+      type: "candidate",
+      content: { description: "candidate empty or null" },
+    });
+  }
+
+  const foundUser = usersList.find((user) => user.name === friendname);
+  if (!foundUser) {
+    return responder.send(socket, {
+      success: false,
+      type: "answer",
+      content: { description: "no friend with matching name" },
+    });
+  }
+
+  responder.sendTo(socket, foundUser.id, {
+    success: true,
+    type: "candidate",
+    content: {
+      description: `${socket.username} sent you a candidate`,
+      candidate,
+    },
+  });
+};
 interface ErrorProps {
   type: string;
   // socket: Socket | ExtendedSocket;
