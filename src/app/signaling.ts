@@ -7,20 +7,20 @@ interface SignalingProps {
   content: any;
 }
 
-export const offer = ({ socket, content }: SignalingProps) => {
-  const { target, offer } = content;
+export const call = ({ socket, content }: SignalingProps) => {
+  const { target } = content;
 
   if (!target) {
     return responder.send(socket, {
       success: false,
-      type: "offer",
-      content: { description: "no target to send offer" },
+      type: "peer-offer",
+      content: { description: "no target tocall" },
     });
   }
   if (socket.data.username === target) {
     return responder.send(socket, {
       success: false,
-      type: "offer",
+      type: "peer-offer",
       content: { description: "a target can't be yourself" },
     });
   }
@@ -29,7 +29,37 @@ export const offer = ({ socket, content }: SignalingProps) => {
   if (!foundUser) {
     return responder.send(socket, {
       success: false,
-      type: "offer",
+      type: "peer-offer",
+      content: { description: "no target with matching name" },
+    });
+  }
+
+  socket.data.friend = foundUser;
+};
+
+export const offer = ({ socket, content }: SignalingProps) => {
+  const { target, offer } = content;
+
+  if (!target) {
+    return responder.send(socket, {
+      success: false,
+      type: "peer-offer",
+      content: { description: "no target to send offer" },
+    });
+  }
+  if (socket.data.username === target) {
+    return responder.send(socket, {
+      success: false,
+      type: "peer-offer",
+      content: { description: "a target can't be yourself" },
+    });
+  }
+
+  const foundUser = usersList.find((user) => user.name === target);
+  if (!foundUser) {
+    return responder.send(socket, {
+      success: false,
+      type: "peer-offer",
       content: { description: "no target with matching name" },
     });
   }
@@ -37,7 +67,7 @@ export const offer = ({ socket, content }: SignalingProps) => {
   if (!offer) {
     return responder.send(socket, {
       success: false,
-      type: "offer",
+      type: "peer-offer",
       content: {
         description: "no offer to send to target",
       },
@@ -45,15 +75,19 @@ export const offer = ({ socket, content }: SignalingProps) => {
   }
 
   // send the offer to our friend
-  responder.sendTo(socket, foundUser.id, {
-    success: true,
-    type: "offer",
-    content: {
-      description: `${socket.data.username} sent you an offer`,
-      emitter: socket.data.username,
-      offer,
-    },
-  });
+  responder.sendTo(
+      socket,
+      foundUser.id,
+      {
+        success: true,
+        type: "peer-offer",
+        content: {
+          description: `${socket.data.username} sent you an offer`,
+          emitter: socket.data.username,
+          offer,
+        },
+      },
+  );
 };
 
 export const answer = ({ socket, content }: SignalingProps) => {
@@ -62,7 +96,7 @@ export const answer = ({ socket, content }: SignalingProps) => {
   if (!caller) {
     return responder.send(socket, {
       success: false,
-      type: "answer",
+      type: "peer-answer",
       content: { description: "caller param not provided" },
     });
   }
@@ -70,7 +104,7 @@ export const answer = ({ socket, content }: SignalingProps) => {
   if (!answer) {
     return responder.send(socket, {
       success: false,
-      type: "answer",
+      type: "peer-answer",
       content: {
         description: "no answer to send to caller!!",
       },
@@ -81,14 +115,14 @@ export const answer = ({ socket, content }: SignalingProps) => {
   if (!foundUser) {
     return responder.send(socket, {
       success: false,
-      type: "answer",
+      type: "peer-answer",
       content: { description: "no caller with matching name" },
     });
   }
 
   responder.sendTo(socket, foundUser.id, {
     success: true,
-    type: "answer",
+    type: "peer-answer",
     content: {
       description: `${socket.data.username} answered you`,
       emitter: socket.data.username,
@@ -103,7 +137,7 @@ export const candidate = ({ socket, content }: SignalingProps) => {
   if (!candidate) {
     return responder.send(socket, {
       success: false,
-      type: "candidate",
+      type: "ice-candidate",
       content: { description: "candidate empty or null" },
     });
   }
@@ -112,14 +146,14 @@ export const candidate = ({ socket, content }: SignalingProps) => {
   if (!foundUser) {
     return responder.send(socket, {
       success: false,
-      type: "answer",
+      type: "peer-answer",
       content: { description: "no friend with matching name" },
     });
   }
 
   responder.sendTo(socket, foundUser.id, {
     success: true,
-    type: "candidate",
+    type: "ice-candidate",
     content: {
       description: `${socket.data.username} sent you a candidate`,
       candidate,

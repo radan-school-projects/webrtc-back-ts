@@ -5,12 +5,12 @@ export interface ExtendedSocket extends Socket {
 }
 
 const CommandTypeEnum = {
-  CONNECT: "connect",
-  // LOGIN: "login",
-  // LEAVE: "leave",
-  OFFER: "offer",
-  ANSWER: "answer",
-  CANDIDATE: "candidate",
+  SOCKET_CONNECT: "socket-connect",
+  CALL_OFFER: "call-offer",
+  CALL_ANSWER: "call-answer",
+  PEER_OFFER: "peer-offer",
+  PEER_ANSWER: "peer-answer",
+  ICE_CANDIDATE: "ice-candidate",
 } as const;
 export type CommandType = typeof CommandTypeEnum[keyof typeof CommandTypeEnum];
 

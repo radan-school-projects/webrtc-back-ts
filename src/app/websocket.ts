@@ -12,7 +12,7 @@ export const connectionEventHandler = (socket: Socket) => {
   });
 
   responder.send(socket, {
-    type: "connect",
+    type: "socket-connect",
     success: true,
     content: {
       message: "connected to the socket server",
@@ -44,15 +44,19 @@ export const connectionEventHandler = (socket: Socket) => {
     const { type, content } = command;
 
     switch (type) {
-      case "offer":
+      case "call-offer":
+        signaling.call({ socket, content });
+        break;
+
+      case "peer-offer":
         signaling.offer({ socket, content });
         break;
 
-      case "answer":
+      case "peer-answer":
         signaling.answer({ socket, content });
         break;
 
-      case "candidate":
+      case "ice-candidate":
         signaling.candidate({ socket, content });
         break;
 
