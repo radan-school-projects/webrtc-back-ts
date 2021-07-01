@@ -1,77 +1,36 @@
-// import { Socket } from "socket.io";
-import { ExtendedSocket } from "../types";
-import * as responder from "../utils/responder";
+import { Socket } from "socket.io";
+import * as responder from "./responder";
 import { usersList } from "./users";
 
 interface SignalingProps {
-  // socket: Socket | ExtendedSocket;
-  socket: ExtendedSocket;
+  socket: Socket;
   content: any;
 }
 
-export const login = ({ socket, content }: SignalingProps) => {
-  const { username } = content;
-
-  // if no username
-  if (!username) {
-    responder.send(socket, {
-      success: false,
-      type: "login",
-      content: { description: "username cannot be empty" },
-    });
-
-    return socket.disconnect();
-  }
-
-  // check if the username is already used
-  const foundUser = usersList.find((user) => user.name === username);
-  if (foundUser) {
-    responder.send(socket, {
-      success: false,
-      type: "login",
-      content: { description: "username already in use" },
-    });
-    return socket.disconnect();
-  }
-
-  // else register the new username
-  usersList.push({
-    id: socket.id,
-    name: username,
-  });
-
-  // send a success response
-  responder.send(socket, {
-    success: true,
-    type: "login",
-    content: { description: "login successful" },
-  });
-};
-
 export const offer = ({ socket, content }: SignalingProps) => {
-  const { friendname, offer } = content;
+  const { target, offer } = content;
 
-  if (!friendname) {
+  if (!target) {
     return responder.send(socket, {
       success: false,
       type: "offer",
-      content: { description: "friendname cannot be empty" },
+      content: { description: "no target to send offer" },
     });
   }
-  if (socket.username === friendname) {
+  if (socket.data.username === target) {
     return responder.send(socket, {
       success: false,
       type: "offer",
-      content: { description: "a friend can't be yourself" },
+      content: { description: "a target can't be yourself" },
     });
   }
 
-  const foundUser = usersList.find((user) => user.name === friendname);
+  const foundUser = usersList.find((user) => user.name === target);
   if (!foundUser) {
     return responder.send(socket, {
       success: false,
       type: "offer",
-      content: { description: "no friends with matching name" },
+      content: { description: "no target with matching name" },
     });
   }
 
@@ -80,7 +39,7 @@ export const offer = ({ socket, content }: SignalingProps) => {
       success: false,
       type: "offer",
       content: {
-        description: "offer cannot be empty",
+        description: "no offer to send to target",
       },
     });
   }
@@ -90,8 +49,8 @@ export const offer = ({ socket, content }: SignalingProps) => {
     success: true,
     type: "offer",
     content: {
-      description: `${socket.username} sent you an offer`,
-      emitter: socket.username,
+      description: `${socket.data.username} sent you an offer`,
+      emitter: socket.data.username,
       offer,
     },
   });
@@ -104,7 +63,7 @@ export const answer = ({ socket, content }: SignalingProps) => {
     return responder.send(socket, {
       success: false,
       type: "answer",
-      content: { description: "caller have no id!" },
+      content: { description: "caller param not provided" },
     });
   }
 
@@ -113,7 +72,7 @@ export const answer = ({ socket, content }: SignalingProps) => {
       success: false,
       type: "answer",
       content: {
-        description: "answer cannot be empty!",
+        description: "no answer to send to caller!!",
       },
     });
   }
@@ -131,8 +90,8 @@ export const answer = ({ socket, content }: SignalingProps) => {
     success: true,
     type: "answer",
     content: {
-      description: `${socket.username} answered you`,
-      emitter: socket.username,
+      description: `${socket.data.username} answered you`,
+      emitter: socket.data.username,
       answer,
     },
   });
@@ -162,7 +121,7 @@ export const candidate = ({ socket, content }: SignalingProps) => {
     success: true,
     type: "candidate",
     content: {
-      description: `${socket.username} sent you a candidate`,
+      description: `${socket.data.username} sent you a candidate`,
       candidate,
     },
   });
@@ -170,7 +129,7 @@ export const candidate = ({ socket, content }: SignalingProps) => {
 interface ErrorProps {
   type: string;
   // socket: Socket | ExtendedSocket;
-  socket: ExtendedSocket;
+  socket: Socket;
 }
 
 export const error = ({ socket, type }: ErrorProps) => {

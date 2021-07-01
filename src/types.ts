@@ -6,8 +6,8 @@ export interface ExtendedSocket extends Socket {
 
 const CommandTypeEnum = {
   CONNECT: "connect",
-  LOGIN: "login",
-  LEAVE: "leave",
+  // LOGIN: "login",
+  // LEAVE: "leave",
   OFFER: "offer",
   ANSWER: "answer",
   CANDIDATE: "candidate",

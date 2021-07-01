@@ -1,23 +1,29 @@
 import express from "express";
 import http from "http";
 import { Server } from "socket.io";
-import * as ws from "./app/websocket";
-import { ioUsername } from "./middleware/io.middleware";
-import * as config from "./config";
+import { connectionEventHandler } from "./app/websocket";
+import {
+  usernameValidation,
+  usernameAvailability,
+} from "./middleware/io.middleware";
+import { PORT, serverOptions } from "./config";
 
 // don't forget to awake heroku
 
 // initialization
 const app = express();
 const httpServer = http.createServer(app);
-const io = new Server(httpServer, config.serverOptions);
+const io = new Server(httpServer, serverOptions);
 
-// middlewares
-io.use(ioUsername);
+// socket.io middlewares
+io.use(usernameValidation);
+io.use(usernameAvailability);
 
 // socket events
-io.on("connection", ws.onConnection);
+io.on("connection", connectionEventHandler);
 
 // server listen
-httpServer.listen(config.PORT,
-    () => console.log(`Runnning on port: ${config.PORT}`));
+httpServer.listen(
+    PORT,
+    () => console.log(`Runnning on port: ${PORT}`),
+);
