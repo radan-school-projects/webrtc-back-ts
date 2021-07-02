@@ -7,20 +7,20 @@ interface SignalingProps {
   content: any;
 }
 
-export const call = ({ socket, content }: SignalingProps) => {
+export const callOffer = ({ socket, content }: SignalingProps) => {
   const { target } = content;
 
   if (!target) {
     return responder.send(socket, {
       success: false,
-      type: "peer-offer",
+      type: "call-offer",
       content: { description: "no target tocall" },
     });
   }
   if (socket.data.username === target) {
     return responder.send(socket, {
       success: false,
-      type: "peer-offer",
+      type: "call-offer",
       content: { description: "a target can't be yourself" },
     });
   }
@@ -29,15 +29,40 @@ export const call = ({ socket, content }: SignalingProps) => {
   if (!foundUser) {
     return responder.send(socket, {
       success: false,
-      type: "peer-offer",
+      type: "call-offer",
       content: { description: "no target with matching name" },
     });
   }
 
-  socket.data.friend = foundUser;
+  responder.sendTo(socket, foundUser.id, {
+    success: true,
+    type: "call-offer",
+    content: {
+      caller: socket.data.username,
+    },
+  });
+  // socket.data.friend = foundUser;
 };
 
-export const offer = ({ socket, content }: SignalingProps) => {
+export const callAnswer = ({ socket, content }: SignalingProps) => {
+  const { caller } = content;
+  // console.log(caller);
+
+  const foundUser = usersList.find((user) => user.name === caller);
+  responder.sendTo(
+      socket,
+      foundUser!.id,
+      {
+        success: true,
+        type: "call-answer",
+        content: {
+          description: `${socket.data.username} has accepted your call`,
+        },
+      },
+  );
+};
+
+export const peerOffer = ({ socket, content }: SignalingProps) => {
   const { target, offer } = content;
 
   if (!target) {
@@ -90,7 +115,7 @@ export const offer = ({ socket, content }: SignalingProps) => {
   );
 };
 
-export const answer = ({ socket, content }: SignalingProps) => {
+export const peerAnswer = ({ socket, content }: SignalingProps) => {
   const { answer, caller } = content;
 
   if (!caller) {
@@ -131,7 +156,7 @@ export const answer = ({ socket, content }: SignalingProps) => {
   });
 };
 
-export const candidate = ({ socket, content }: SignalingProps) => {
+export const iceCandidate = ({ socket, content }: SignalingProps) => {
   const { candidate, friendname } = content;
 
   if (!candidate) {

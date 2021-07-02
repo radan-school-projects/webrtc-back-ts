@@ -15,7 +15,7 @@ export const connectionEventHandler = (socket: Socket) => {
     type: "socket-connect",
     success: true,
     content: {
-      message: "connected to the socket server",
+      description: "connected and registered",
       connected: socket.connected,
       username: socket.data.username,
     },
@@ -45,19 +45,23 @@ export const connectionEventHandler = (socket: Socket) => {
 
     switch (type) {
       case "call-offer":
-        signaling.call({ socket, content });
+        signaling.callOffer({ socket, content });
+        break;
+
+      case "call-answer":
+        signaling.callAnswer({ socket, content });
         break;
 
       case "peer-offer":
-        signaling.offer({ socket, content });
+        signaling.peerOffer({ socket, content });
         break;
 
       case "peer-answer":
-        signaling.answer({ socket, content });
+        signaling.peerAnswer({ socket, content });
         break;
 
       case "ice-candidate":
-        signaling.candidate({ socket, content });
+        signaling.iceCandidate({ socket, content });
         break;
 
       default:
