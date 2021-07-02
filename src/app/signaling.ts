@@ -186,8 +186,10 @@ export const iceCandidate = ({ socket, content }: SignalingProps) => {
   if (!foundUser) {
     return responder.send(socket, {
       success: false,
-      type: "peer-answer",
-      content: { description: "no friend with matching name" },
+      type: "ice-candidate",
+      content: {
+        description: "no friend with matching name",
+      },
     });
   }
 
