@@ -8,7 +8,7 @@ interface SignalingProps {
 }
 
 export const callOffer = ({ socket, content }: SignalingProps) => {
-  const { target } = content;
+  const { target, cancelling } = content;
 
   if (!target) {
     return responder.send(socket, {
@@ -31,6 +31,17 @@ export const callOffer = ({ socket, content }: SignalingProps) => {
       success: false,
       type: "call-offer",
       content: { description: "no target with matching name" },
+    });
+  }
+
+  if (cancelling === true) {
+    return responder.sendTo(socket, foundUser.id, {
+      success: true,
+      type: "call-offer",
+      content: {
+        // caller: socket.data.username,
+        cancelling: true,
+      },
     });
   }
 
@@ -57,8 +68,9 @@ export const callAnswer = ({ socket, content }: SignalingProps) => {
         type: "call-answer",
         content: {
           description:
-            `${socket.data.username}
-             has ${accepted ? "accepted" : "denied"} your call`,
+            `${socket.data.username} has ${accepted ?
+              "accepted" :
+              "denied"} your call`,
           accepted,
         },
       },
