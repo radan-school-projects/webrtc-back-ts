@@ -45,7 +45,7 @@ export const callOffer = ({ socket, content }: SignalingProps) => {
 };
 
 export const callAnswer = ({ socket, content }: SignalingProps) => {
-  const { caller } = content;
+  const { caller, accepted } = content;
   // console.log(caller);
 
   const foundUser = usersList.find((user) => user.name === caller);
@@ -56,7 +56,10 @@ export const callAnswer = ({ socket, content }: SignalingProps) => {
         success: true,
         type: "call-answer",
         content: {
-          description: `${socket.data.username} has accepted your call`,
+          description:
+            `${socket.data.username}
+             has ${accepted ? "accepted" : "denied"} your call`,
+          accepted,
         },
       },
   );
