@@ -1,52 +1,57 @@
-# api-express-ts
+# WebRTC Backend Typescript
 
-A Standalone Api Server built with Express
+This repo contains the backend part of the [webrt-front-ts](https://github.com/radandevist/webrtc-front-ts) repo. This server fulfill the signaling purposes of our simple WebRTC chat app.
 
-This repo is intended as a starting point for futures api-server projects based on express and mongodb via mongoose. And also we will be using **typescript**.
+The corresponding frontend could be found [here](https://github.com/radandevist/webrtc-front-ts).
 
-Maybe later support for mysql will be added?
+The branch "https-local-fullstack" contains a self-hosted frontend and ssl certifificate and key to enable https for  local testing. WebRTC wont'work if it ain't https.
 
-## How to use?
+This repo uses the [api-express-ts](https://github.com/radandevist/api-express-ts) template.
 
-* prerequisites: **node** and **mongodb** must be installed on your machine
+## Requirements
 
-* install dependencies: `npm install`
+You need node v14+ and yarn in order to run this project.
 
-* development: `npm run dev`
+## Installation
 
-* production: `npm run build` then `npm run start`
+### Clone or download a copy of this repo under the current branch
 
-* clean dist folder: `npm run clean`
+```bash
+git clone https://github.com/radandevist/webrtc-back-ts
 
-## about connecting to mongodb:
+// or cloning a specific branch
+git clone -b <branch_name> https://github.com/radandevist/webrtc-back-ts
+```
+### Install the dependencies
 
-You will need **MongoDB** installed on your machine for local development.
+```bash
+cd webrtc-back-ts
+yarn install
+```
 
-The mongo uri in our [config file](https://github.com/radandevist/standalone-api-express-server/blob/master/src/config/config.ts) is best suited for [mongoDB Atlas](https://www.mongodb.com/cloud), to continue with this config you'll need to register an account there.
+### Run for development
 
-Althought, you're free to use any mongo host or any database management system also.
+```bash
+yarn dev
+```
 
-## about environment variable:
+### Build for deployment
 
-In development mode(!! Only in development mode !!), this repo uses [dotenv-webpack](https://www.npmjs.com/package/dotenv-webpack) for loading environment in a `.env` file at the root folder.
-The `.env` file is intentionnaly gitignored for security concerns.
+Generate a production bundle under the `/dist` directory.
 
-**remark:** Each time a new environment variable is added to `.env` you will need to restart manually the server; i.e.: hint <kbd>Ctrl</kbd> + <kbd>C</kbd> to stop the server then re-run `yarn dev`.
+```bash
+yarn build
+```
 
+### clean dist folder
 
-## Todo next:
+```bash
+yarn clean
+```
 
+### Run for development
 
-* [ ] add authors field in tutorials model
+```bash
+yarn start
+```
 
-* [ ]  detailed authorization:
-  * [ ]  only admin can delete user and update role
-  * [ ]  admins can also create users
-  * [ ]  moderators and admins can unpublish tutorial
-  * [ ]  only user can update his email and username
-
-* [ ]  generate api-docs using swagger-ui
-
-* [X] functionning CRUD Api routes with Authentication and role based authorizations
-
-* [X]  revise all status code responses in the appe case
