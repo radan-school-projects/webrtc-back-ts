@@ -171,6 +171,17 @@ export const peerAnswer = ({ socket, content }: SignalingProps) => {
   });
 };
 
+export const peerLeave = ({ socket, content }: SignalingProps) => {
+  const { target } = content;
+
+  const foundUser = usersList.find((user) => user.name === target);
+  responder.sendTo(socket, foundUser!.id, {
+    success: true,
+    type: "peer-leave",
+    content: null,
+  });
+};
+
 export const iceCandidate = ({ socket, content }: SignalingProps) => {
   const { candidate, friendname } = content;
 
