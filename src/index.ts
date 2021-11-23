@@ -18,9 +18,6 @@ import { PORT, serverOptions } from "./config";
 const app = express();
 // app.use(cors());
 app.use(express.static(path.join(process.cwd(), "static")));
-app.get("*", (req: Request, res: Response) => {
-  res.sendFile(path.join(process.cwd(), "welcome.html"));
-});
 
 // const httpServer = https.createServer(app);
 const httpServer = http.createServer(app);
@@ -32,6 +29,11 @@ io.use(usernameAvailability);
 
 // socket events
 io.on("connection", connectionEventHandler);
+
+// client
+app.get("*", (req: Request, res: Response) => {
+  res.sendFile(path.join(process.cwd(), "static", "index.html"));
+});
 
 // server listen
 httpServer.listen(
