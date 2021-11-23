@@ -10,6 +10,7 @@ const CommandTypeEnum = {
   CALL_ANSWER: "call-answer",
   PEER_OFFER: "peer-offer",
   PEER_ANSWER: "peer-answer",
+  PEER_LEAVE: "peer-leave",
   ICE_CANDIDATE: "ice-candidate",
 } as const;
 export type CommandType = typeof CommandTypeEnum[keyof typeof CommandTypeEnum];

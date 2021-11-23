@@ -60,6 +60,10 @@ export const connectionEventHandler = (socket: Socket) => {
         signaling.peerAnswer({ socket, content });
         break;
 
+      case "peer-leave":
+        signaling.peerLeave({ socket, content });
+        break;
+
       case "ice-candidate":
         signaling.iceCandidate({ socket, content });
         break;
