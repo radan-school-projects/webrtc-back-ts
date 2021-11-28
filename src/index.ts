@@ -1,9 +1,7 @@
 import path from "path";
 import express, { Request, Response } from "express";
 import http from "http";
-// import https from "https";
 import { Server } from "socket.io";
-// import cors from "cors";
 
 import { connectionEventHandler } from "./app/websocket";
 import {
@@ -16,10 +14,8 @@ import { PORT, serverOptions } from "./config";
 
 // initialization
 const app = express();
-// app.use(cors());
 app.use(express.static(path.join(process.cwd(), "static")));
 
-// const httpServer = https.createServer(app);
 const httpServer = http.createServer(app);
 const io = new Server(httpServer, serverOptions);
 
