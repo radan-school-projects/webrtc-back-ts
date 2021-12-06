@@ -1,9 +1,9 @@
+import fs from "fs";
 import path from "path";
 import express, { Request, Response } from "express";
-import http from "http";
-// import https from "https";
+// import http from "http";
+import https from "https";
 import { Server } from "socket.io";
-// import cors from "cors";
 
 import { connectionEventHandler } from "./app/websocket";
 import {
@@ -12,15 +12,23 @@ import {
 } from "./middleware/io.middleware";
 import { PORT, serverOptions } from "./config";
 
+const CWD = process.cwd();
+
+const key = fs.readFileSync(path.join(CWD, "selfsigned.key"));
+const cert = fs.readFileSync(path.join(CWD, "selfsigned.crt"));
+const options = {
+  key,
+  cert,
+};
+
 // don't forget to awake heroku
 
 // initialization
 const app = express();
-// app.use(cors());
 app.use(express.static(path.join(process.cwd(), "static")));
 
-// const httpServer = https.createServer(app);
-const httpServer = http.createServer(app);
+const httpServer = https.createServer(options, app);
+// const httpServer = http.createServer(app);
 const io = new Server(httpServer, serverOptions);
 
 // socket.io middlewares
@@ -38,6 +46,5 @@ app.get("*", (req: Request, res: Response) => {
 // server listen
 httpServer.listen(
     PORT,
-    // "192.168.1.119",
     () => console.log(`Runnning on port: ${PORT}`),
 );
