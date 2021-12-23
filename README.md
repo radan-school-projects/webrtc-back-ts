@@ -1,10 +1,12 @@
 # WebRTC Backend Typescript
 
-This repo contains the backend part of the [webrt-fron-ts](https://github.com/radandevist/webrtc-front-ts) repo. This server fulfill the signaling purposes of our simple WebRTC chat app.
+This repo contains the backend part of the [webrt-front-ts](https://github.com/radandevist/webrtc-front-ts) repo. This server fulfill the signaling purposes of our simple WebRTC chat app.
 
-For each branches, the corresponding frontend could be found on the branch of the same name in webrtc-front-ts [here](https://github.com/radandevist/webrtc-front-ts).
+The corresponding frontend could be found [here](https://github.com/radandevist/webrtc-front-ts).
 
-It uses the [api-express-ts](https://github.com/radandevist/api-express-ts) template.
+The branch "https-local-fullstack" contains a self-hosted frontend and ssl certifificate and key to enable https for  local testing. WebRTC wont'work if it ain't https.
+
+This repo uses the [api-express-ts](https://github.com/radandevist/api-express-ts) template.
 
 ## Requirements
 
